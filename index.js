@@ -15,6 +15,14 @@ const db = mysql.createConnection({
     dateStrings: "date"
 });
 
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to the MySQL database');
+});
+
 
 app.get('/', (req, res) => {
     const sql = "SELECT * FROM conge_form ";
