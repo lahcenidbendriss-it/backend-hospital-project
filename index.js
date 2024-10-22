@@ -7,10 +7,10 @@ app.use(express.json());
 app.use(cors());
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || "sql7.freemysqlhosting.net",  
-    user: process.env.DB_USER || "sql7728738",                
-    password: process.env.DB_PASSWORD || "8WljhSStMC",       
-    database: process.env.DB_NAME || "sql7728738",            
+    host: process.env.DB_HOST || "sql10.freemysqlhosting.net",  
+    user: process.env.DB_USER || "sql10739927",                
+    password: process.env.DB_PASSWORD || "vRi7qdKwIL",       
+    database: process.env.DB_NAME || "sql10739927",            
     port: process.env.DB_PORT || 3306,                        
     dateStrings: "date"
 });
@@ -107,7 +107,7 @@ app.get('/getrecord/:ppr', (req, res) => {
 
 
 app.listen(3030, () => {
-    console.log("Server is running on port 3030");
+    console.log("Server is running on port 3030 || ");
 });
 
 
