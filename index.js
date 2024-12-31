@@ -98,49 +98,77 @@ try{
 }
 });
 
+// Login for employee to authenticate and show his data
+app.post('/login', (req, res) => {
+    const { emailR, passwordR } = req.body;
+    const sql = "SELECT * FROM employes_dms WHERE emailR = ?";
 
+    db.query(sql, [emailR], async (err, results) => {
+        if (err) {
+            console.error("Error finding employee:", err);
+            return res.status(500).json({ error: "An error occurred while finding the employee" });
+        }
 
+        if (results.length === 0) {
+            return res.status(400).json({ error: "User not registered" });
+        }
 
+        const user = results[0];
+        const isMatch = await bcrypt.compare(passwordR, user.passwordR);
 
+        if (!isMatch) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
 
-
-
-
-// compare the login data insert  if that one on database table or not
-
-app.post('/login_form', async (req, res) => {
-    const { usernameR, passwordR } = req.body;
-
-    if (!usernameR || !passwordR) {
-        return res.status(400).json({ error: "Username and password are required" });
-    }
-
-    try {
-        const sql = "SELECT * FROM employes_dms WHERE usernameR = ?";
-        db.query(sql, [usernameR], async (err, results) => {
-            if (err) {
-                console.error("Database query error:", err);
-                return res.status(500).json({ error: "Database error" });
-            }
-
-            if (results.length === 0) {
-                return res.status(401).json({ error: "Invalid username or password" });
-            }
-
-            const user = results[0];
-            const passwordMatch = await bcrypt.compare(passwordR, user.passwordR);
-
-            if (!passwordMatch) {
-                return res.status(401).json({ error: "Invalid username or password" });
-            }
-
-            return res.status(200).json({ message: "Login successful", user: { id: user.id, username: user.usernameR, email: user.emailR } });
-        });
-    } catch (error) {
-        console.error("Error during login:", error);
-        return res.status(500).json({ error: "Internal server error" });
-    }
+        return res.json({ message: "Login successful", user });
+    });
 });
+
+// route for all congee on table conge_form count [SELECT COUNT(ID) FROM conge_form ] to stock number on variable
+
+app.get('/count-conge-form', (req, res) => {
+    const sql = "SELECT COUNT(ppr) AS count FROM conge_form";
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error counting rows:", err);
+            return res.status(500).json({ error: "An error occurred while counting the rows" });
+        }
+
+        const count = results[0].count;
+        return res.json({ count });
+    });
+});
+
+// route for all user created account
+
+app.get('/count-register-form', (req, res) => {
+    const sql = "SELECT COUNT(ID) AS count FROM employes_dms";
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error counting rows:", err);
+            return res.status(500).json({ error: "An error occurred while counting the rows" });
+        }
+
+        const count = results[0].count;
+        return res.json({ count });
+    });
+});
+
+
+
+
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
+
+
+
+
+
 
 
 
